@@ -12,24 +12,23 @@ async function fetchPortfolio() {
 }
 
 function renderDashboard(data) {
-    // 假設 data[0] 是標題列，data[1] 開始是資料
-    // 我們選取一個 div 來顯示資料
-    const container = document.getElementById('stock-list');
-    container.innerHTML = ''; // 清空目前顯示
+  const container = document.getElementById('stock-list');
+  container.innerHTML = ''; // 清空目前的顯示
+
+  // 從第二列開始遍歷 (跳過標題列)
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    const ticker = row[0]; // A欄：代號
     
-    // 循環處理資料並建立卡片
-    data.slice(1).forEach(row => {
-        const [ticker, name, qty, cost, price, profit] = row;
-        const card = document.createElement('div');
-        card.className = 'stock-card';
-        card.innerHTML = `
-            <div><strong>${ticker} ${name}</strong><br><small>${qty} 股</small></div>
-            <div class="${profit >= 0 ? 'profit' : 'loss'}">
-                ${profit >= 0 ? '+' : ''}${profit}
-            </div>
-        `;
-        container.appendChild(card);
-    });
+    // 【關鍵修改】：如果沒有代號，就跳過這行，不要產生卡片
+    if (!ticker) continue; 
+
+    // 產生卡片的邏輯...
+    const card = document.createElement('div');
+    card.className = 'stock-card';
+    card.innerHTML = `<h3>${ticker}</h3><p>盈虧: ${row[5] || '0'}</p>`;
+    container.appendChild(card);
+  }
 }
 
 // 頁面載入時執行
