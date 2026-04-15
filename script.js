@@ -1,5 +1,5 @@
 // 您的 GAS Web App URL (請替換為您在第二階段取得的真實網址)
-const API_URL = "https://script.google.com/macros/s/AKfycbyqrLQ0hJDt4XR_jChIf4GZWfnN3OOxV_E9J4k2aH1TnWi3Axv4lcDBZwWvsKjF4L3T/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwD935znh0g0fCDu29F5gg7bmbeGvkKtCAu_2twp9i2QfEANxvXTStCsrCxvyT_H5U8/exec";
 
 async function fetchPortfolio() {
     try {
