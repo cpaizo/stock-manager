@@ -1,4 +1,4 @@
-const API_URL = "您的_GAS_API_網址";
+const API_URL = "https://script.google.com/macros/s/AKfycbySVuIXj9jOIkiTHXirz1LoguSujQH7iVk7RdPsSJhPGgIm2sUpxfwMnEqGoInNs0Qd/exec";
 
 window.onload = async () => {
     const pwd = prompt("請輸入管理密碼");
