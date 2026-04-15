@@ -20,7 +20,10 @@ function renderDashboard(data) {
     const row = data[i];
     const ticker = row[0]; // A 欄：代號
     const name = row[1];   // B 欄：名稱
+    const shares = row[2]; // C 欄：股數
+    const cost   = row[3]; // D 欄：成本
     const profit = row[5]; // F 欄：盈虧
+    
 
     if (!ticker) continue; 
 
