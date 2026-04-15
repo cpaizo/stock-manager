@@ -13,23 +13,29 @@ async function fetchPortfolio() {
 
 function renderDashboard(data) {
   const container = document.getElementById('stock-list');
-  container.innerHTML = ''; // 清空目前的顯示
+  container.innerHTML = ''; 
 
   // 從第二列開始遍歷 (跳過標題列)
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
-    const ticker = row[0]; // A欄：代號
-    
-    // 【關鍵修改】：如果沒有代號，就跳過這行，不要產生卡片
+    const ticker = row[0]; // A 欄：代號
+    const name = row[1];   // B 欄：名稱
+    const profit = row[5]; // F 欄：盈虧
+
     if (!ticker) continue; 
 
-    // 產生卡片的邏輯...
     const card = document.createElement('div');
     card.className = 'stock-card';
-    card.innerHTML = `<h3>${ticker}</h3><p>盈虧: ${row[5] || '0'}</p>`;
+    
+    // 這裡加入名稱顯示
+    card.innerHTML = `
+      <div class="card-content">
+        <h3>${ticker} ${name || ''}</h3>
+        <p>盈虧: ${profit || '0'}</p>
+      </div>
+    `;
     container.appendChild(card);
   }
 }
-
 // 頁面載入時執行
 fetchPortfolio();
