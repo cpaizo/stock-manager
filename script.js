@@ -1,46 +1,66 @@
-// 您的 GAS Web App URL (請替換為您在第二階段取得的真實網址)
+// 1. 設定 API 網址 (請填入您 GAS 部署後的正式網址)
 const API_URL = "https://script.google.com/macros/s/AKfycbwD935znh0g0fCDu29F5gg7bmbeGvkKtCAu_2twp9i2QfEANxvXTStCsrCxvyT_H5U8/exec";
 
-async function fetchPortfolio() {
-    try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-        renderDashboard(data);
-    } catch (error) {
-        console.error("資料獲取失敗:", error);
+// 2. 當頁面載入時執行
+document.addEventListener("DOMContentLoaded", function() {
+    fetchData();
+});
+
+// 3. 從 Google Apps Script 獲取 JSON 資料
+function fetchData() {
+    fetch(API_URL)
+        .then(response => response.json())
+        .then(data => {
+            renderDashboard(data);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+// 4. 智慧渲染與歸併邏輯
+function renderDashboard(data) {
+    const container = document.getElementById('stock-list');
+    container.innerHTML = '';
+    
+    // 用來儲存歸併後的資料
+    const summary = {};
+    
+    // data[0] 是標題列，我們從 i=1 開始遍歷
+    for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const ticker = (row[0] || "").toString().trim().toUpperCase(); // A 欄：代號
+        const name   = row[1] || "";                                   // B 欄：名稱
+        const shares = parseFloat(row[2] || 0);                        // C 欄：股數
+        const cost   = parseFloat(row[3] || 0);                        // D 欄：平均成本
+        const profit = parseFloat(row[5] || 0);                        // F 欄：盈虧
+        
+        if (!ticker) continue;
+        
+        // 如果該股票尚未出現，初始化物件
+        if (!summary[ticker]) {
+            summary[ticker] = { name: name, shares: 0, cost: 0, profit: 0 };
+        }
+        
+        // 進行加總
+        summary[ticker].shares += shares;
+        summary[ticker].cost += cost;
+        summary[ticker].profit += profit;
+    }
+    
+    // 5. 產生 HTML 卡片
+    for (let ticker in summary) {
+        const item = summary[ticker];
+        const card = document.createElement('div');
+        card.className = 'stock-card';
+        
+        // 將數值加入卡片，並使用 toLocaleString() 增加千分位符號
+        card.innerHTML = `
+            <h3>${ticker} ${item.name}</h3>
+            <div class="card-info">
+                <p>總股數: ${item.shares.toLocaleString()} 股</p>
+                <p>平均成本: ${item.cost.toLocaleString()}</p>
+                <p><strong>總盈虧: ${item.profit.toLocaleString()}</strong></p>
+            </div>
+        `;
+        container.appendChild(card);
     }
 }
-
-function renderDashboard(data) {
-  const container = document.getElementById('stock-list');
-  container.innerHTML = ''; 
-
-  for (let i = 1; i < data.length; i++) {
-    const row = data[i];
-    const ticker = row[0]; // A 欄：代號
-    const name   = row[1]; // B 欄：名稱
-    const shares = row[2]; // C 欄：股數
-    const cost   = row[3]; // D 欄：成本
-    const profit = row[5]; // F 欄：盈虧
-
-    if (!ticker) continue; 
-
-    const card = document.createElement('div');
-    card.className = 'stock-card';
-    
-    // 透過模板字面值加入更多資訊
-    card.innerHTML = `
-      <div class="card-header">
-        <h3>${ticker} - ${name || '未知'}</h3>
-      </div>
-      <div class="card-body">
-        <p>持股數: ${shares || 0} 股</p>
-        <p>平均成本: ${cost ? cost.toFixed(2) : 0}</p>
-        <p><strong>總盈虧: ${profit ? profit.toLocaleString() : 0}</strong></p>
-      </div>
-    `;
-    container.appendChild(card);
-  }
-}
-// 頁面載入時執行
-fetchPortfolio();
