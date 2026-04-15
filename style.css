@@ -1,0 +1,13 @@
+#stock-list { margin: 10px; }
+.stock-card {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.profit { color: red; font-weight: bold; }
+.loss { color: green; font-weight: bold; }
